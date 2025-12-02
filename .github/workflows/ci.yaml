@@ -43,9 +43,7 @@ jobs:
       - name: Start Flask Server (Linux/macOS)
         if: runner.os != 'Windows'
         shell: bash
-        run: |
-          nohup flask run --host=0.0.0.0 --port=5000 &
-          disown -h
+        run: flask run --host=0.0.0.0 --port=5000 > server.log 2>&1 &
 
       - name: Wait 10 seconds for server to start
         shell: bash
