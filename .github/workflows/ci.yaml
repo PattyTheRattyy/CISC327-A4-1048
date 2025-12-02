@@ -33,15 +33,24 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt && python -m playwright install && python -m pip install pytest-playwright
 
-      - name: Start Flask server
-        run: |
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            start /B flask run --host=0.0.0.0 --port=5000
-          else
-            flask run --host=0.0.0.0 --port=5000 &
-          fi
-          sleep 10
+
+      - name: Start Flask Server (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: Start-Process python -ArgumentList "-m flask run --host=0.0.0.0 --port=5000"
+
+      
+      - name: Start Flask Server (Linux/macOS)
+        if: runner.os != 'Windows'
         shell: bash
+        run: |
+          nohup flask run --host=0.0.0.0 --port=5000 &
+          disown -h
+
+      - name: Wait 10 seconds for server to start
+        shell: bash
+        run: sleep 10
+
 
       - name: Run tests
         run: pytest -v
