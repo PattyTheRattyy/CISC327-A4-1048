@@ -49,7 +49,7 @@ jobs:
 
       - name: Wait 10 seconds for server to start
         shell: bash
-        run: sleep 10
+        run: sleep 20
 
 
       - name: Run tests
